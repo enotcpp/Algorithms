@@ -1,0 +1,159 @@
+class Solution {
+public:
+    
+    int firstUniqChar(string s) 
+    {
+        pair<int, int> buf[26] = {{0, 0}};
+    
+        int size = s.size();
+
+        for(int i = 0; i < size; ++i)
+        {
+            if(++buf[s[i] -= 'a'].first == 1)
+            {
+                buf[s[i]].second = i;
+            }
+        }
+        
+        if(size < 26)
+        {
+            for(int i = 0; i < size; ++i)
+            {
+                if(buf[s[i]].first == 1)
+                {
+                    return i;
+                }
+            }
+        }
+        else
+        {
+            size = 26; 
+            
+            int index = INT_MAX;
+            
+            for(int i = 0; i < size; ++i)
+            {
+                if(buf[i].first == 1)
+                {
+                    index = min(index, buf[i].second);
+                }
+            }
+            
+            return index != INT_MAX ? index : -1;
+        }
+        
+        return -1;
+    } 
+    
+    int firstUniqChar0(string s) 
+    {
+        
+        int buf[26] = {0};
+        
+        int size = s.size();
+        
+        for(int i = 0; i < size; ++i)
+        {
+            ++buf[s[i] -= 'a'];
+        }
+        
+        for(int i = 0; i < size; ++i)
+        {
+            if(buf[s[i]] == 1)
+            {
+                return i;
+            }
+        }
+       
+        return -1;
+    }
+    
+    int firstUniqChar1(string s)
+    {
+        
+        unordered_map<char, int> m;
+
+        int size = s.size();
+        
+        for(int i = 0; i < size; ++i)
+        {
+            ++m[s[i]];    
+        }
+        
+        for(int i = 0; i < size; ++i)
+        {
+            if(m[s[i]] == 1)
+            {
+                return i;
+            }    
+        }
+        
+        return -1;
+    }
+    
+    int firstUniqChar2(string s) 
+    {
+        int size = s.size();
+        
+        for(int i = 0, j = 0, c = 0; i < size; ++i)
+        {
+            if(s[i] != '-')
+            {
+                c = 0;
+
+                for(j = i + 1; j < size; ++j)
+                {
+                    if(s[i] == s[j])
+                    {
+                        s[j] = '-';
+                        
+                        break;
+                        ++c;
+                    }
+                }
+                    
+                if(c)
+                {
+                    s[i] = '-';
+                }
+                else
+                {
+                    return i;
+                }
+            }
+        }
+
+        return -1;
+    }
+    
+    int firstUniqChar3(string s) 
+    {
+        int size = s.size();
+
+        vector<int> dp(size, 1);
+
+        for(int i = 0, j = 0, c = 0; i < size; ++i)
+        {
+            if(dp[i])
+            {
+                for(j = i + 1; j < size; ++j)
+                {
+                    if(s[i] == s[j])
+                    {
+                        ++dp[i];
+
+                        dp[j] = 0;
+                    }
+                }
+
+                if(dp[i] == 1)
+                {
+                    return i;
+                }
+            }   
+        }
+
+        return -1;
+    }
+    
+};
