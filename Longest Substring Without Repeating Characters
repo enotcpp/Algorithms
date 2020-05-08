@@ -21,4 +21,32 @@ public:
 
         return counter;
     }
+
+    int lengthOfLongestSubstring1(string s) 
+    {
+        int size = int(s.size()), answer = 0, i = 0, j = 0;
+
+        unordered_set<char> us;
+
+        while(i < size && j < size)
+        {
+            // try to extend the range [i, j]
+            if(us.find(s[j]) == us.end())
+            {
+                us.insert(s[j]);
+
+                ++j;
+
+                answer = max(answer, j - i);
+            }
+            else
+            {
+                us.erase(s[i]);
+
+                ++i;
+            }
+        }
+
+        return answer;
+    }  
 };
