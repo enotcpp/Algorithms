@@ -1,6 +1,6 @@
 class Solution {
 public:
-    int findMaxLength1(vector<int>& nums) 
+    int findMaxLength2(vector<int>& nums) 
     {
         int size = int(nums.size()), answer = 0;
 
@@ -30,6 +30,31 @@ public:
 
         return answer;
     }
+    
+    int findMaxLength1(const vector<int>& nums)
+    {
+        int size = int(nums.size()), acc = 0, answer = 0;
+
+        unordered_map<int, int> dists; 
+
+        dists[0] = -1;
+
+        for(int i = 0; i < size; ++i)
+        {
+            acc += nums[i] ? 1 : -1;
+
+            if(dists.find(acc) == dists.end())
+            {
+                dists[acc] = i;
+            }
+            else
+            {
+                answer = max(answer, i - dists[acc]);            
+            } 
+        }
+
+        return answer;
+    }
 
     int findMaxLength(vector<int>& nums) 
     {
@@ -54,5 +79,5 @@ public:
         }
 
         return answer;
-    }   
+    }
 };
