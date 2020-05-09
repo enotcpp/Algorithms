@@ -1,6 +1,6 @@
 class Solution {
 public:
-    int findMaxLength(vector<int>& nums) 
+    int findMaxLength1(vector<int>& nums) 
     {
         int size = int(nums.size()), answer = 0;
 
@@ -30,4 +30,29 @@ public:
 
         return answer;
     }
+
+    int findMaxLength(vector<int>& nums) 
+    {
+        int size = int(nums.size()), acc = size, answer = 0;
+
+        vector<int> dists(size + size + 1); 
+
+        dists[size] = size;
+
+        for(int i = 1; i <= size; ++i)
+        {
+            acc += nums[i - 1] ? 1 : -1;
+
+            if(dists[acc])
+            {
+                answer = max(answer, i > dists[acc] ? i - dists[acc] : i);
+            }
+            else
+            {
+                dists[acc] = i; 
+            } 
+        }
+
+        return answer;
+    }   
 };
