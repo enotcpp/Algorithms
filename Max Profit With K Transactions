@@ -101,11 +101,75 @@ int max_profit_no_dp(vector<int>& prices, int k)
    return result;
 }
 
-void run()
-{
-   vector<int> prices({1, 25, 24, 23, 12, 36, 14, 40, 31, 41, 5});
-   
-   cout << prices.size() << " : " << prices.back() << endl;
+//+------------------------------------------------------------------+
+//| max_profit_dp_1                                                  |
+//| O(nk) time | O(nk) space                                         |
+//+------------------------------------------------------------------+
 
-   cout << "Max : " << max_profit(prices, 2) << endl;          
+int max_profit_dp_1(vector<int>& prices, int k)
+{
+    int days = int(prices.size()), transactions = k + 1;
+
+    if(!days)
+    {
+        return 0;
+    }
+
+    vector<vector<int>> profits(k + 1, vector<int>(days, 0));
+
+    for(int t = 1; t < transactions; ++t)
+    {
+        int prev_max = INT_MIN;
+
+        for(int d = 1; d < days; ++d)
+        {
+            prev_max = 
+                max(prev_max, profits[t - 1][d - 1] - prices[d - 1]);
+            
+            profits[t][d] =
+                max(profits[t][d - 1], prev_max + prices[d]);
+        }
+    }
+
+    return profits[k][days - 1];
+}
+
+//+------------------------------------------------------------------+
+//| max_profit_dp_2                                                  |
+//| O(nk) time | O(n) space                                          |
+//+------------------------------------------------------------------+
+
+int max_profit_dp_2(vector<int>& prices, int k)
+{
+    int days = int(prices.size()), transactions = k + 1;
+
+    if(!days)
+    {
+        return 0;
+    }
+
+    vector<int> * profits      = nullptr;
+    vector<int> * prev_profits = nullptr;
+    
+    vector<int> even_profits(days, 0);
+    vector<int> odd_profits(days, 0); 
+
+    for(int t = 1; t < transactions; ++t)
+    {
+        int prev_max = INT_MIN;
+
+        profits      = t & 1 ? &odd_profits : &even_profits;
+        prev_profits = t & 1 ? &even_profits : &odd_profits;
+
+        for(int d = 1; d < days; ++d)
+        {
+            prev_max = 
+                max(prev_max, (*prev_profits)[d - 1] - prices[d - 1]);
+            
+            (*profits)[d] =
+                max((*profits)[d - 1], prev_max + prices[d]);
+        }
+    }
+
+    return k & 1 ? odd_profits.back() : even_profits.back();
 }
