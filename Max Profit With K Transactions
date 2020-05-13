@@ -5,7 +5,7 @@ using namespace std;
 //| get_max_sum                                                      |
 //+------------------------------------------------------------------+
 
-int get_max_sum(const vector<vector<int>>& nums, int from, int to, int depth)
+int get_max_sum(const vector<vector<int>>& profits, int from, int to, int depth)
 {
    int result = 0;
    
@@ -19,8 +19,8 @@ int get_max_sum(const vector<vector<int>>& nums, int from, int to, int depth)
                max
                (
                   result, 
-                  nums[i][j] + 
-                  get_max_sum(nums, j + 1, to + 1, depth - 1)
+                  profits[i][j] + 
+                  get_max_sum(profits, j + 1, to + 1, depth - 1)
                ); 
          }
       }
@@ -75,19 +75,19 @@ int max_profit(vector<int>& prices, int k)
       k = size;
    }
    
-   vector<vector<int>> dp;
+   vector<vector<int>> profits;
    
-   dp.resize(size);
+   profits.resize(size);
    
    for(int i = 0; i < size; ++i)
    {
-      dp[i].resize(size);
+      profits[i].resize(size);
       
       bottom = bottoms[i];
       
       for(int j = i; j < size; ++j)
       {
-         dp[i][j] = tops[j] - bottom;   
+         profits[i][j] = tops[j] - bottom;   
       }   
    }
 
@@ -95,7 +95,7 @@ int max_profit(vector<int>& prices, int k)
    
    for(int i = k; i; --i)
    {
-      result = max(result, get_max_sum(dp, 0, size - k + 1, i));
+      result = max(result, get_max_sum(profits, 0, size - k + 1, i));
    }
    
    return result;
