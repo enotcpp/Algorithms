@@ -30,10 +30,10 @@ int get_max_sum(const vector<vector<int>>& profits, int from, int to, int depth)
 }
 
 //+------------------------------------------------------------------+
-//| max_profit                                                       |
+//| max_profit_no_dp                                                 |
 //+------------------------------------------------------------------+
 
-int max_profit(vector<int>& prices, int k)
+int max_profit_no_dp(vector<int>& prices, int k)
 {
    int size = int(prices.size()), bottom = INT_MAX, top = INT_MIN; 
    
