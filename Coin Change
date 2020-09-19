@@ -1,0 +1,104 @@
+//+------------------------------------------------------------------+ 
+//| Change-making problem :                                          |
+//| 322. Coin Change                                                 |
+//| https://en.wikipedia.org/wiki/Change-making_problem              |
+//+------------------------------------------------------------------+
+
+//+------------------------------------------------------------------+
+//| coinChangeNoDP                                                   |
+//+------------------------------------------------------------------+
+
+int coinChangeNoDP(const uint index, const vector<int>& coins, int amount)
+{
+   if(!amount)
+   {
+      return 0;
+   }
+   
+   if(index >= coins.size())
+   {
+      return -1;
+   }
+   
+   const int max_val = amount / coins[index];
+   
+   int min_cost = INT_MAX; 
+   
+   for(int n = 0; n <= max_val; ++n)
+   { 
+      if(n * coins[index] <= amount)
+      {
+         int res = 
+            coinChangeNoDP
+            (
+               index + 1, 
+               coins, 
+               amount - n * coins[index]
+            );
+         
+         if(res != -1)
+         {
+            min_cost = std::min(min_cost, n + res);   
+         }
+      }
+   }
+   
+   return min_cost == INT_MAX ? -1 : min_cost;
+}
+
+int coinChangeNoDP(vector<int>& coins, int amount) 
+{
+   return coinChangeNoDP(0, coins, amount);
+}
+
+//+------------------------------------------------------------------+
+//| coinChangeDP                                                     |
+//+------------------------------------------------------------------+
+
+int coinChangeDP(vector<int>& coins, int rem, vector<int>& dp) 
+{
+   if(rem < 0) 
+   {
+      return -1;
+   }
+   
+   if(rem == 0)
+   {
+      return 0;
+   }
+   
+   if(!dp[rem - 1])
+   { 
+      int min = INT_MAX;
+      
+      const uint size = coins.size();
+      
+      for(uint i = 0; i < size; ++i)
+      {
+         int res = coinChangeDP(coins, rem - coins[i], dp);
+         
+         if(res >= 0 && res < min)
+         {
+            min = 1 + res;
+         }   
+      }
+      
+      dp.assign(rem - 1, min == INT_MAX ? -1 : min);
+   }
+   
+   return dp[rem - 1];
+}
+
+int coinChangeDP(vector<int>& coins, int amount) 
+{
+   if(amount < 1)
+   {
+      return 0;
+   }
+   
+   vector<int> dp;
+   
+   dp.resize(amount);
+   
+   return coinChangeDP(coins, amount, dp);
+}
