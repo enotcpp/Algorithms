@@ -1,0 +1,47 @@
+  int findMinDifference(vector<string>& timePoints) 
+  {
+      const size_t size = timePoints.size();
+
+      const int day = 24 * 60;
+
+      int min_length = day, max_length = 0, index = 0;
+
+      auto GetMinutes = 
+          [](const string& t)
+          {
+              return ((t[0] - '0') * 10 + (t[1] - '0')) * 60 +
+                      (t[3] - '0') * 10 + (t[4] - '0');   
+          };
+
+      vector<bool> times(day);
+
+      for(int i = 0; i < size; ++i)
+      {
+          index = GetMinutes(timePoints[i]);
+
+          if(times[index])
+          {
+              return 0;
+          }
+
+          times[index] = true;
+
+          min_length = std::min(min_length, index);
+          max_length = std::max(max_length, index);
+      }
+
+      index      = min_length;
+      min_length = (day - max_length + min_length);
+
+      for(int i = index + 1; i < day; ++i)
+      {
+          if(times[i])
+          {
+              min_length = std::min(min_length, i - index);
+
+              index = i;
+          }
+      }
+
+      return min_length;
+  }
