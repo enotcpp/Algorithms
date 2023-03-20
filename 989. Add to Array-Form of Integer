@@ -1,1 +1,75 @@
+class Solution {
+public:
+    vector<int> addToArrayForm1(vector<int>& num, int k) 
+    {
+        const size_t size = num.size();
+        
+        int add = 0;
+        
+        for(size_t i = 0; i < size; ++i)
+        {
+            num[size - i - 1] += k % 10 + add;
+            
+            if(bool(add = (num[size - i - 1] > 9)))
+            {
+                num[size - i - 1] -= 10;
+            }
+            
+            k /= 10;
+        }
+        
+        if(k += add)
+        {
+            size_t k_size = log10(k);
 
+            num.resize(size + k_size + 1);
+
+            for(size_t i = 0; i < size; ++i)
+            {
+                num[size + k_size - i] = num[size - i - 1];
+            }
+
+            for(size_t i = 0; i <= k_size; ++i)
+            {
+                num[k_size - i] = k % 10;
+                
+                k /= 10;
+            }
+        }
+
+        return num;
+    }
+
+    vector<int> addToArrayForm(vector<int>& num, int k) 
+    {
+        for(size_t i = num.size(); i-- > 0 && k;)
+        {
+            k += num[i];
+
+            num[i] = k % 10;
+
+            k /= 10;
+        }
+        
+        if(k)
+        {
+            size_t size = log10(k);
+
+            num.resize(num.size() + size + 1);
+
+            for(size_t i = num.size() - 1; i > size; --i)
+            {
+                num[i] = num[i - size - 1];
+            }
+
+            for(size_t i = 0; i <= size; ++i)
+            {
+                num[size - i] = k % 10;
+                
+                k /= 10;
+            }
+        }
+
+        return move(num);
+    }
+};
