@@ -1,0 +1,125 @@
+#include <cstdio>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+using namespace std;
+
+int dna(string &&s1, string &&s2)
+{
+    // Счетчик количества символов. Вектор позволяет
+    // удобно обращаться по индексу, чтобы
+    // не надо было каждый раз делать смещения.
+    
+    // b = (2^11)
+    // строка кодируется в счетчик символов.
+    // T * b^3 + G * b^2 + C * b^1 + A
+
+    vector<long long> mul(128, 0), all;
+
+    // Увеличить счетчик по 'T' - надо добавлять его значение в code.
+    // 12 + : это смещение первых 12 бит для позиции и номера множества.
+
+    mul['A'] = 1LL << (12 + 11 * 0);
+    mul['C'] = 1LL << (12 + 11 * 1);
+    mul['G'] = 1LL << (12 + 11 * 2);
+    mul['T'] = 1LL << (12 + 11 * 3);
+
+    // Базоый цикл задает наименьшая строка, т.к. больше ее размера
+    // не может быть общей подстроки. 
+
+    // Начинаем обход от наибольшей возможной подстроки,
+    // первая найденная будет наилучшей. Все измеряется ее длиной.
+
+    all.reserve(2 * (s1.size() + s2.size()));
+
+    for(int len = (int)min(s1.size(), s2.size()), size = 0; len >= 1; len--)
+    {
+        all.clear();
+
+        // Добавляем все подстроки длины len в виде счетчика в all
+
+        {
+            long long code = 0;
+
+            // на 1 итерации вя строка s1 (размером len) будет
+            // представлена счетчиком, который удобно сравнивать на подобие.
+            // это допустимо т.к. порядок символом неважен.
+
+            for(int i = 0; i < len; ++i)
+            {
+                code += mul[s1[i]];
+            }
+
+            // x*2 : добавляет номер позиции со сдвигом 1 бит
+            // + 0 : 0 это s1, 1 это s2
+            all.push_back(code + 0 * 2 + 0); 
+
+            size = (int)s1.size();
+
+            // Двигаем текущий интервал по строке,
+            // самый перый символ исключаем из счетчика,
+            // новый добавляем
+
+            for(int i = len; i < size; ++i)
+            {
+                code += mul[s1[i]];
+                code -= mul[s1[i - len]];
+
+                all.push_back(code + (i - len + 1) * 2 + 0);
+            }
+        }
+
+        {
+            long long code = 0;
+
+            for(int i = 0; i < len; ++i)
+            {
+                code += mul[s2[i]];
+            }
+
+            all.push_back(code + 0 * 2 + 1); 
+
+            size = (int)s2.size();
+
+            for(int i = len; i < size; ++i)
+            {
+                code += mul[s2[i]];
+                code -= mul[s2[i - len]];
+
+                all.push_back(code + (i - len + 1) * 2 + 1);
+            }
+        }
+
+        // все строки равной длины
+
+        std::sort(all.begin(), all.end());
+
+        size = (int)all.size();
+
+        for(int i = 1; i < size; ++i)
+        {
+            int set1 = int(all[i] & 1);
+            int set2 = int(all[i - 1] & 1);
+            
+            if((all[i] >> 12) == (all[i - 1] >> 12) && set1 != set2)
+            {
+                int pos1 = int(all[i] >> 1) & 0x7FF;
+                int pos2 = int(all[i - 1] >> 1) & 0x7FF;
+
+                if(set1 == 1)
+                {
+                    std::swap(pos1, pos2);
+                }
+
+                printf("%d\n", len);
+                printf("%d %d", pos1 + 1, pos2 + 1);
+
+                return 0;
+            }
+        }
+    }
+
+    return 0;
+}
