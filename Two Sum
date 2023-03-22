@@ -19,7 +19,7 @@ public:
         return {-1, -1};
     }
     
-    vector<int> twoSum(vector<int>& nums, int target) 
+    vector<int> twoSum2(vector<int>& nums, int target) 
     {
         unordered_map<int, int> m;
         
@@ -40,5 +40,25 @@ public:
         }
         
         return {-1, -1};
+    }
+    
+    vector<int> twoSum(vector<int>& nums, int target) 
+    {
+        unordered_map<int, int> m;
+        unordered_map<int, int>::const_iterator it;
+
+        for(int i = 0, size = int(nums.size()); i < size; ++i)
+        {
+            if((it = m.find(target - nums[i])) == m.end())
+            {
+                m[nums[i]] = i;  
+            }
+            else 
+            {
+                return {it->second, i};
+            }
+        }
+        
+        return {};
     }
 };
