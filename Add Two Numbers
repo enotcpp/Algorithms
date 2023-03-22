@@ -10,7 +10,78 @@
  */
 class Solution {
 public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) 
+
+    ListNode* addTwoNumbers(ListNode* a, ListNode* b)
+    {
+        ListNode root, * result = &root;
+
+        int sum = 0;
+
+        for
+        (
+            int sum = 0; 
+            a || b || sum;
+            result = result->next,
+            sum /= 10
+        )
+        {
+            if(a)
+            {
+                sum += a->val;
+                a = a->next;
+            }
+
+            if(b)
+            {
+                sum += b->val;
+                b = b->next;
+            }
+
+            result->next = new ListNode(sum % 10);
+        }
+
+        return root.next;       
+    }
+
+    ListNode* addTwoNumbers1(ListNode* a, ListNode* b)
+    {
+        ListNode root, * result = &root;
+
+        int sum = 0;
+
+        while(a && b)
+        {
+            sum += a->val + b->val;
+            
+            result->next = new ListNode(sum % 10);
+
+            sum /= 10;
+
+            a = a->next;
+            b = b->next;
+            result = result->next;
+        }
+
+        for(ListNode * n = a ? a : b; n; n = n->next)
+        {        
+            sum += n->val;
+
+            result->next = new ListNode(sum % 10); 
+
+            sum /= 10;
+
+            result = result->next;
+        }
+
+        if(sum)
+        {
+            result->next = new ListNode(1);     
+        }
+
+        return root.next;       
+    }
+    
+    ListNode* addTwoNumbers2(ListNode* l1, ListNode* l2) 
     {
         int add = 0;
 
@@ -49,7 +120,7 @@ public:
         return root->next;
     }
     
-    ListNode* addTwoNumbers1(ListNode* l1, ListNode* l2) 
+    ListNode* addTwoNumbers3(ListNode* l1, ListNode* l2) 
     {
         int carry = 0, sum = 0, x = 0, y = 0;
 
