@@ -1,0 +1,110 @@
+class LongestSubstringWithoutRepeatingCharacters
+{
+public:
+
+    // подход 3: коротки схемы
+    int solution1(string_view s)
+    {
+        int ans = 0, size = s.size();
+
+        for(int len = 1; len < 128; ++len)
+        {
+            bool goodLen = false;
+            for(int first = 0; first + len <= size; ++first)
+            {
+                bool used[128] = { false };
+                bool good = true;
+
+                for(int i = first; i < first + len; ++i)
+                {
+                    char c = s[i];
+                
+                    if(used[c])
+                    {
+                        good = false;
+                        break;
+                    }
+
+                    used[c] = true;
+                }
+
+                if(good)
+                {
+                    ans = len;
+
+                    // следующе позиции начал перебирать нет смысла.
+
+                    goodLen = true;
+                    break;
+                }
+            }
+
+            if(!goodLen)
+            {
+                // если нет длины len, то большей не будет.
+                // можно проверять ans < len
+                break;
+            }
+        }
+
+        return ans;
+    }
+    
+    // подход 4:
+    int solution(string_view s)
+    {
+        int ans = 0, size = s.size();
+
+        for(int first = 0; first < size; ++first)
+        {
+            bool used[128] = { false };
+
+            for(int i = first; i < size; ++i)
+            {
+                char c = s[i];
+                
+                if(used[c])
+                {
+                    break;
+                }
+
+                used[c] = true;
+                
+                // Обновляем здесь, на случай если прошли всю строку
+                // и не нашли повтора, то в if не зайдем.
+                ans = max(ans, i - first + 1);
+            }
+        }
+
+        return ans;
+    }
+
+    // подход 5:
+    int solution(string_view s)
+    {
+        int ans = 0, size = s.size();
+        int after = 0; // до куда уже проверено
+        bool used[128] = { false };  
+
+        for(int first = 0; first < size; ++first)
+        {
+            while(after < size && !used[s[after]])
+            {
+                used[s[after]] = true;
+                ++after;
+            }
+
+            ans = max(ans, after - first);
+
+            used[s[first]] = false;
+        }
+
+        return ans;
+    }
+
+
+    void run()
+    {
+    
+    }
+};
