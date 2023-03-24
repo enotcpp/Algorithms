@@ -1,0 +1,104 @@
+class Solution {
+public:
+    int reverse2(int x) 
+    {
+        const int sign = x < 0 ? -1 : 1;
+        
+        string s = to_string(abs((long long)x));
+
+        std::reverse(s.begin(), s.end());
+
+        long long val = stoll(s) * sign;
+
+        return (INT_MIN <= val && val <= INT_MAX) ? int(val) : 0;
+    }
+
+    int reverse1(int x) 
+    {
+        if(!x || x == INT_MIN)
+        {
+            return 0;
+        }
+        int sign = 1;
+
+        if(x < 0)
+        {
+            sign = -1;
+            x *= -1;
+        }
+
+        int ans = 0;
+
+        while(!(x % 10))
+        {
+            x /= 10;
+        }
+
+        const int size = log10(x);
+        if(size > 8)
+        {
+            for(int i = size, tmp = 0; i >= 0; --i)
+            {
+                if(i > 8 && (x % 10) > 2)
+                {
+                    return 0;
+                }
+
+                tmp = (x % 10) * int(pow(10, i));
+                
+                if(INT_MAX - tmp < ans)
+                {
+                    return 0;
+                }
+
+                ans += tmp;
+                x /= 10;
+            }
+        }
+        else
+        {
+            for(int i = size; i >= 0; --i)
+            {
+                ans += (x % 10) * int(pow(10, i));
+
+                x /= 10;
+            }   
+        }
+
+        return ans * sign;   
+    }
+
+    int reverse(int x)
+    {
+        if(x == INT_MIN)
+        {
+            return 0;
+        }
+        
+        int sign = 1;
+
+        if(x < 0)
+        {
+            sign = -1;
+            x *= -1;
+        }
+
+        int ans = 0, d = 0;
+        const int ans_max = INT_MAX / 10;
+        while(x)
+        {
+            d = x % 10;
+
+            x /= 10;
+
+            if(ans > ans_max)
+            {
+                return 0; 
+            }
+
+            ans = ans * 10 + d;
+        }
+
+        return ans * sign;
+    }
+};
