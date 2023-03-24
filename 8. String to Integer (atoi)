@@ -1,0 +1,104 @@
+class Solution {
+public:
+    int myAtoi(string_view s)
+    {
+        int index = 0, ans = 0, d = 0;
+
+        const int size = int(s.size()); 
+
+        while(index < size && s[index] == ' ')
+        { 
+            ++index;
+        }
+        
+        if(index == size)
+        {
+            return 0;
+        }
+
+        int sign = 1;
+        
+        if(s[index] == '-')
+        {
+            sign = -1;
+            ++index;
+        }
+        else if(s[index] == '+')
+        {
+            ++index;
+        }
+
+        while(index < size && '0' <= s[index] && s[index] <= '9')
+        {
+            d = int(s[index] - '0');
+            
+            if(ans < INT_MAX / 10 || ans == INT_MAX / 10 && d <= INT_MAX % 10)
+            {
+                ans = ans * 10 + d;    
+            }
+            else
+            {
+                return sign >= 0 ? INT_MAX : INT_MIN;
+            }
+
+            ++index;
+        }
+
+        return ans * sign;    
+    }
+
+    int myAtoi1(string_view s) 
+    {
+         int index = 0, ans = 0, d = 0;
+
+        const int size = int(s.size()); 
+
+        for(; index < size && s[index] == ' '; ++index);
+
+        if(index == size)
+        {
+            return 0;
+        }
+
+        if(s[index] == '-')
+        {
+            while(++index < size && '0' <= s[index] && s[index] <= '9')
+            {
+                d = int(s[index] - '0');
+            
+                if(ans > INT_MIN / 10 || (ans == INT_MIN / 10 && d <= -(INT_MIN % 10)))
+                {
+                    ans = ans * 10 - d;
+                }
+                else
+                {
+                    return INT_MIN;
+                }
+            }
+        }
+        else
+        {
+            if(s[index] == '+')
+            {
+                ++index;
+            }
+
+            while(index < size && '0' <= s[index] && s[index] <= '9')
+            {
+                d = int(s[index] - '0');
+            
+                if(ans < INT_MAX / 10 || (ans == INT_MAX / 10 && d <= INT_MAX % 10))
+                {
+                    ans = ans * 10 + d;   
+                    ++index; 
+                }
+                else
+                {
+                    return INT_MAX;
+                }
+            }
+        }
+
+        return ans;       
+    }
+};
