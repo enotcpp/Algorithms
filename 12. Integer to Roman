@@ -1,0 +1,119 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+class Solution {
+public:
+    string intToRoman1(int num) 
+    {
+        string res, ch;
+
+        int dec = 1;
+
+        unordered_map<int, string> m;
+ 
+        m[1]    = "I";
+        m[5]    = "V";
+        m[10]   = "X";
+        m[50]   = "L";
+        m[100]  = "C";
+        m[500]  = "D";
+        m[1000] = "M";
+
+        while(num)
+        {
+            switch(num % 10)
+            {
+                case 1:
+                {
+                    res = m[dec] + res;
+                    break;
+                }
+                case 2:
+                {
+                    ch = m[dec];
+                    
+                    res = ch + ch + res;
+
+                    break;
+                }
+                case 3:
+                {
+                    ch = m[dec];
+
+                    res = ch + ch + ch + res;
+
+                    break;
+                }
+                case 4:
+                {
+                    res = m[dec] + m[5 * dec] + res;
+
+                    break;    
+                }
+                case 5:
+                {
+                    res = m[5 * dec] + res;
+
+                    break;                    
+                }
+                case 6:
+                {
+                    res = m[5 * dec] + m[dec] + res;
+
+                    break;                    
+                }
+                case 7:
+                {
+                    ch = m[dec];
+
+                    res = m[5 * dec] + ch + ch + res;
+
+                    break;                    
+                }
+                case 8:
+                {
+                    ch = m[dec];
+
+                    res = m[5 * dec] + ch + ch + ch + res;
+
+                    break;                    
+                }
+                case 9:
+                {
+                    res = m[dec] + m[dec * 10] + res;
+
+                    break;    
+                }
+            }
+
+            num /= 10;
+            dec *= 10;
+        }
+
+        return res;  
+    }
+
+    string intToRoman(int num) 
+    {
+        vector<int> values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+
+        vector<string> romans = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        
+        string result = "";
+        
+        for(int i = 0; i < values.size(); ++i) 
+        {
+            while(num >= values[i]) 
+            {
+                result += romans[i];
+
+                num -= values[i];
+            }
+        }
+
+        return result;
+    }
+};
