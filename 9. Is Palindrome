@@ -1,0 +1,145 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+class Solution {
+public:
+    bool isPalindrome2(int x) 
+    {
+        string s = to_string(x);
+
+        const int size = int(s.size());
+
+        if(!size || s[0] == '-')
+        {
+            return false;
+        }
+        
+        const int off = size & 1, mid = size >> 1;
+
+        for
+        (
+            int after = mid + off,
+            prev = mid - 1; 
+            after < size; 
+            ++after, --prev
+        )
+        {
+            if(s[prev] != s[after])
+            {
+                return false;
+            }
+        }
+
+        return true;  
+    }
+
+    bool isPalindrome1(int x) 
+    {
+        if(x <= 0)
+        {
+            return !x;
+        }
+        
+        const int size = log10(x) + 1, mid = size >> 1;
+
+        vector<int> v(mid);
+
+        for(int i = 0; i < mid; ++i)
+        {
+            v[i] = x % 10;
+
+            x /= 10;
+        }
+
+        if(size & 1)
+        {
+            x /= 10;
+        }
+
+        for(int i = mid - 1; i >= 0; --i)
+        {
+            if(x % 10 != v[i])
+            {
+                return false;
+            }
+
+            x /= 10;
+        }
+
+        return true;
+    }
+
+    bool isPalindrome0(int x) 
+    {
+        if(x <= 0)
+        {
+            return !x;
+        }
+        
+        int size = log10(x) + 1;
+
+        int tmp = x, d = pow(10, size - 1);
+
+        size >>= 1;
+
+        for(int i = 0; i < size; ++i)
+        {
+            if((tmp / d) % 10 != x % 10)
+            {
+                return false;
+            }
+            
+            d /= 10;
+            x /= 10;
+        }
+
+        return true;
+    }
+
+    bool isPalindrome00(int x) 
+    {
+        if(x <= 0)
+        {
+            return !x;
+        }
+        
+        int size = log10(x) + 1;
+
+        int tmp = 0;
+
+        bool is_odd = size & 1;
+
+        size >>= 1;
+
+        for(int i = 0; i < size; ++i)
+        {
+            tmp = tmp * 10 + x % 10;
+
+            x /= 10;
+        }
+
+        if(is_odd)
+        {
+            return tmp == x / 10;
+        }
+
+        return tmp == x;
+    }
+
+    bool isPalindrome(int x) 
+    {
+        if (x < 0 || (x != 0 && x % 10 == 0))
+            return false;
+
+        int rev = 0;
+        while (x > rev) {
+            rev = rev * 10 + x % 10;
+            x /= 10;
+        }
+
+        return x == rev || x == rev / 10;
+    }
+};
