@@ -1,0 +1,46 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) 
+    {  
+        vector<ListNode*> v;
+        
+        v.reserve(30);
+
+        while(head)
+        {
+            v.push_back(head);
+
+            head = head->next;
+        }
+
+        int size = v.size();
+
+        if(size == n)
+        {
+            return v[0]->next;
+        }
+        else
+        {
+            head = v[size - n - 1];
+            head->next = v[size - n]->next;
+        }
+
+        return v[0];
+    }
+};
