@@ -1,0 +1,107 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+class Solution {
+public:
+    
+    void backtrack
+    (
+        vector<string>& res, 
+        const vector<string>& dict, 
+        const string_view& digits, 
+        string& str, 
+        const int index, 
+        const int depth
+    )
+    {
+        if(index == depth)
+        {
+            res.push_back(str);
+        }
+        else
+        {
+            string s = dict[digits[index] - '2'];
+
+            for(int i = 0, size = int(s.size()); i < size; ++i)
+            {
+                str.push_back(s[i]);
+
+                backtrack(res, dict, digits, str, index + 1, depth);
+
+                str.pop_back();
+            }
+        }
+    }
+
+    vector<string> letterCombinations0(const string_view digits) 
+    {
+        if(digits.empty())
+        {
+            return {};
+        }
+
+        vector<string> res;
+
+        vector<string> dict =
+        {
+            "abc",
+            "def",
+            "ghi",
+            "jkl",
+            "mno",
+            "pqrs",
+            "tuv",
+            "wxyz"
+        };
+
+        string str;
+        
+        str.reserve(digits.size());
+
+        backtrack(res, dict, digits, str, 0, digits.size());
+
+        return res;   
+    }
+
+    vector<string> letterCombinations(const string_view digits) 
+    {
+        if(digits.empty())
+        {
+            return {};
+        }
+
+        vector<string> dict =
+        {
+            "abc",
+            "def",
+            "ghi",
+            "jkl",
+            "mno",
+            "pqrs",
+            "tuv",
+            "wxyz"
+        };
+
+        vector<string> set(1, "");
+        
+        for(char digit : digits)
+        {
+            vector<string> new_set;
+            
+            for(const string& pref : set)
+            {
+                for(char letter : dict[digit - '2'])
+                {
+                    new_set.push_back(pref + letter);
+                }
+            }
+
+            new_set.swap(set);
+        }
+
+        return set; 
+    }
+};
