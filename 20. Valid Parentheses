@@ -1,0 +1,62 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+class Solution {
+public:
+    bool isValid(string s) 
+    {
+        size_t size = s.size();
+
+        if(size & 1)
+        {
+            return false;
+        }   
+
+        list<char> p(1, s.front());
+
+        for(size_t i = 1; i < size; ++i)
+        {
+            if(p.back() + 2 == s[i] || p.back() + 1 == s[i])
+            {
+                p.pop_back();
+            }
+            else 
+            {
+                p.push_back(s[i]);
+            }
+        }
+
+        return p.empty();
+    }
+
+    bool isValidStack(string_view s) 
+    {
+        size_t size = s.size();
+
+        if(size & 1)
+        {
+            return false;
+        }   
+
+        stack<char, vector<char>> p;
+        
+        p.push(s.front());
+
+        for(size_t i = 1; i < size; ++i)
+        {
+            if(p.top() + 2 == s[i] || p.top() + 1 == s[i])
+            {
+                p.pop();
+            }
+            else 
+            {
+                p.push(s[i]);
+            }
+        }
+
+        return p.empty();
+    }
+};
