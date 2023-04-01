@@ -1,0 +1,90 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* a, ListNode* b) 
+    {
+        ListNode root, * node = &root;
+
+        while(a && b)
+        {
+            if(a->val < b->val)
+            {
+                node->next = a;
+                
+                a = a->next;
+            }
+            else
+            {
+                node->next = b;
+                
+                b = b->next;
+            }
+
+            node = node->next;
+        }
+
+        node->next = a ? a : b;
+        
+        return root.next;
+    }
+
+    ListNode* mergeTwoLists1(ListNode* a, ListNode* b) 
+    {
+        ListNode root, * node = &root;
+
+        while(a && b)
+        {
+            if(a->val < b->val)
+            {
+                node->next = new ListNode(a->val);
+                
+                a = a->next;
+            }
+            else
+            {
+                node->next = new ListNode(b->val);
+                
+                b = b->next;
+            }
+
+            node = node->next;
+        }
+        
+        if(a)
+        {
+            while(a)
+            {
+                node->next = new ListNode(a->val);
+                node = node->next;
+
+                a = a->next;    
+            }
+        }
+        else
+        {
+            while(b)
+            {
+                node->next = new ListNode(b->val);
+                node = node->next;
+                b = b->next;
+            }
+        }
+
+        return root.next;        
+    }
+};
