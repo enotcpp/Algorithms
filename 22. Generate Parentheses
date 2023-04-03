@@ -1,21 +1,46 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+constexpr long long factorial(long long n)
+{
+    return (n <= 1) ? 1 : (n * factorial(n - 1));
+}
+
 class Solution {
 public:
-    vector<string> generateParenthesis(int n) 
+
+    size_t get_size(double n) const 
+    {
+        return static_cast<size_t>
+                (
+                    round(factorial(2 * n) / 
+                    pow(factorial(n), 2.0) / 
+                    (n + 1))
+                 );
+    }
+
+    vector<string> generateParenthesis1(int n) 
     {
         vector<string> res;
+
+        //res.reserve(get_size(n));
+
         helper(res, "", 0, 0, n);
         return res;
     }
 
     void helper(vector<string>& res, string s, int left, int right, int n) 
     {
-        if(s.length() == n * 2) 
+        if(s.length() == n << 1) 
         {
             res.push_back(s);
 
             return;
         }
-
+        
         if(left < n)
         {
             helper(res, s + "(", left + 1, right, n);
@@ -25,5 +50,101 @@ public:
         {
             helper(res, s + ")", left, right + 1, n);
         }
-    }   
+    }  
+
+    vector<string> generateParenthesis2(int n) 
+    {
+        vector<string> result;
+        stack<pair<string, int>> st;
+        st.push({"", 0});
+
+        while (!st.empty()) {
+            auto [s, cnt] = st.top();
+            st.pop();
+
+            if (s.size() == n * 2) {
+                result.push_back(s);
+            } else {
+                if (cnt < n) {
+                    st.push({s + "(", cnt + 1});
+                }
+                if (s.size() < cnt * 2) {
+                    st.push({s + ")", cnt});
+                }
+            }
+        }
+
+        return result;
+    } 
+
+    vector<string> generateParenthesis(int n) 
+    {
+        vector<string> res;    
+        
+        res.reserve(get_size(n));
+
+        vector<char> cur;
+
+        cur.reserve(2 * n);
+
+        for(int i = 0; i < n; ++i)
+        {
+            cur.push_back('(');
+        }
+
+        for(int i = 0; i < n; ++i)
+        {
+            cur.push_back(')');
+        }
+
+        do
+        {
+            res.push_back(string(cur.begin(), cur.end()));
+        } while(nextParentheses(cur));
+
+        return res;
+    }
+private:
+
+    bool nextParentheses(vector<char>& cur) const // true - found next
+    {
+        int nOpening = 0;
+        int nClosing = 0;
+
+        for(int i = (int)cur.size() - 1; i >= 0; --i)
+        {
+            if(cur[i] == ')')
+            {
+                ++nClosing;    
+            }
+            else
+            {
+                ++nOpening;
+                
+                if(nClosing > nOpening)
+                {
+                    cur[i] = ')';
+                    --nClosing;
+
+                    while(nOpening > 0)
+                    {
+                        ++i;
+                        cur[i] = '(';
+                        --nOpening;
+                    }
+
+                    while(nClosing > 0)
+                    {
+                        ++i;
+                        cur[i] = ')';
+                        --nClosing;
+                    }
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 };
