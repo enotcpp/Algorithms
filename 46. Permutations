@@ -1,0 +1,258 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+class Solution {
+public:
+    vector<vector<int>> permute1(vector<int>& nums) 
+    {
+        vector<vector<int>> ans;
+        
+        vector<int> cur = nums;
+
+        while(true)
+        {
+            ans.push_back(cur);
+
+            next_permutation(cur.begin(), cur.end());
+
+            if(cur == nums)
+            {
+                break;
+            }
+        }
+
+        return ans;  
+    }
+
+    vector<vector<int>> permute2(vector<int>& nums) 
+    {
+        vector<vector<int>> ans;
+        
+        vector<int> cur = nums;
+
+        sort(cur.begin(), cur.end());
+
+        do
+        {
+            ans.push_back(cur);
+        }
+        while(next_permutation(cur.begin(), cur.end()));
+
+        return ans;   
+    }
+
+    vector<vector<int>> permute3(vector<int>& nums) 
+    {
+        vector<vector<int>> ans;
+
+        size_t size = factorial(nums.size());
+        
+        ans.reserve(size);
+        
+        vector<int> cur = nums;
+
+        for(size_t i = 0; i < size; ++i)
+        {
+            ans.push_back(cur);
+
+            NextPermutation(cur.begin(), cur.end());
+        }
+
+        return ans;
+    }
+
+    vector<vector<int>> permute4(vector<int>& nums) 
+    {
+        vector<vector<int>> ans;
+
+        ans.push_back({nums[0]});
+         
+        for(size_t len = 2, size = nums.size(); len <= size; ++len)
+        {
+            vector<vector<int>> next;
+
+            for(const vector<int> &p : ans)
+            {
+                for(size_t insPos = 0; insPos < len; ++insPos)
+                {
+                    next.push_back(p);
+                    next.back().insert(next.back().begin() + insPos, nums[len - 1]);
+                }
+            }
+
+            next.swap(ans);
+        }
+
+        return ans;
+    }
+
+    void generate
+    (
+        vector<int>& prefix, 
+        vector<int>& remaining, 
+        vector<vector<int>>& ans
+    )
+    {
+        if(remaining.empty())
+        {
+            ans.push_back(prefix);
+
+            return;
+        }
+
+        for(size_t i = 0, size = remaining.size(); i < size; ++i)
+        {
+            int cur = remaining[i];
+
+            remaining.erase(remaining.begin() + i);
+
+            prefix.push_back(cur);
+
+            generate(prefix, remaining, ans);
+
+            prefix.pop_back();
+
+            remaining.insert(remaining.begin() + i, cur);
+        }
+    }
+
+    vector<vector<int>> permute5(vector<int>& nums) 
+    {
+        vector<vector<int>> ans;
+
+        vector<int> prefix;
+        
+        vector<int> remaining = nums;
+
+        generate(prefix, remaining, ans);
+        
+        return ans;
+    }
+
+    void generate
+    (
+        vector<int>& a, 
+        size_t changeStart, 
+        vector<vector<int>>& ans
+    )
+    {
+        if(changeStart == a.size())
+        {
+            ans.push_back(a);
+
+            return;
+        }
+
+        for(size_t i = changeStart, size = a.size(); i < size; ++i)
+        {
+            swap(a[changeStart], a[i]);
+
+            generate(a, changeStart + 1, ans);
+
+            swap(a[changeStart], a[i]);
+        }
+    }
+
+    vector<vector<int>> permute6(vector<int> nums) 
+    {
+        vector<vector<int>> ans;
+
+        generate(nums, 0, ans);
+        
+        return ans;
+    }
+
+    void generate
+    (
+        const vector<int>& a, 
+        size_t pos,
+        vector<int>& perm,
+        vector<bool>& free,
+        vector<vector<int>>& ans
+    )
+    {
+        if(pos == a.size())
+        {
+            ans.push_back(perm);
+
+            return;
+        }
+
+        for(size_t i = 0, size = a.size(); i < size; ++i)
+        {
+            if(free[i])
+            {
+                perm[i] = a[pos];
+
+                free[i] = false;
+
+                generate(a, pos + 1, perm, free, ans);
+
+                free[i] = true;
+            }
+        }
+    }
+
+    vector<vector<int>> permute(const vector<int>& nums) 
+    {
+        vector<vector<int>> ans;
+
+        vector<bool> free(nums.size(), true);
+
+        vector<int> perm(nums.size());
+
+        generate(nums, 0, perm, free, ans);
+        
+        return ans;
+    }
+
+private:
+
+    constexpr int factorial(int n) 
+    {
+        return (n <= 1) ? 1 : (n * factorial(n - 1));
+    }
+
+    template<typename BidIt>
+    bool NextPermutation(BidIt first, BidIt after)
+    {
+        BidIt cur = after;
+
+        while(true)
+        {
+            --cur;
+
+            if(cur == first)
+            {
+                reverse(first, after);
+
+                return false;
+            }
+
+            BidIt prev = cur;
+
+            --prev;
+
+            if(*prev < *cur)
+            {
+                BidIt i = after;
+
+                while(true)
+                {
+                    --i;
+
+                    if(*i > *prev)
+                    {
+                        swap(*i, *prev);
+                        reverse(cur, after);
+
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+};
