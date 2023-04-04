@@ -1,0 +1,231 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+class Solution {
+public:
+    
+    vector<int> searchRange2(const vector<int>& a, int target) 
+    {
+        auto first = lower_bound(a.begin(), a.end(), target);
+
+        if(first == a.end() || *first != target)
+        {
+            return {-1, -1};
+        }
+
+        auto after = upper_bound(a.begin(), a.end(), target);
+
+        return
+            {
+                (int)std::distance(a.begin(), first),
+                (int)std::distance(a.begin(), after) - 1
+            };   
+    }
+
+    vector<int> searchRange1(const vector<int>& nums, int target) 
+    {
+        int n = nums.size();
+        int left = 0;
+        int right = n - 1;
+        int start = -1;
+        int end = -1;
+
+        // Находим начальный индекс искомого элемента
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                start = mid;
+                right = mid - 1; // Ищем дальше в левой части
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        // Если искомый элемент не найден, возвращаем {-1, -1}
+        if (start == -1) {
+            return {-1, -1};
+        }
+
+        left = 0;
+        right = n - 1;
+
+        // Находим конечный индекс искомого элемента
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) {
+                end = mid;
+                left = mid + 1; // Ищем дальше в правой части
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        // Возвращаем результат в виде вектора {начальный индекс, конечный индекс}
+        return {start, end};
+    }
+
+    vector<int> searchRange0(const vector<int>& nums, int target) 
+    {
+        int left = 0, right = (int)nums.size(), mid = 0;
+
+        if(!right)
+        {
+            return {-1, -1};
+        }
+
+        --right;
+
+        while(left <= right)
+        {
+            mid = left + ((right - left) >> 1);
+        
+            if(target < nums[mid])
+            {
+                right = mid - 1;
+            }
+            else if(target > nums[mid])
+            {
+                left = mid + 1;
+            }
+            else
+            {
+                return
+                    {
+                        lower(nums, left, mid - left, target),
+                        upper(nums, mid, right - mid + 1, target) - 1
+                    };
+            }
+        }
+        
+        return {-1, -1};
+    }
+
+    vector<int> searchRange(const vector<int>& a, int target) 
+    {
+        int first = firstIndex(a, target);
+
+        if(first == a.size() || a[first] != target)
+        {
+            return {-1, -1};
+        }
+
+        int last = lastIndex(a, target);
+
+        return {first, last};
+    }
+
+private:
+
+    // Поиск 1: левая граница
+    // left - позиция элемента < target
+    // right - позиция элемента >= target
+
+    int firstIndex(const vector<int>& a, int target) const
+    {
+        int left = -1;
+        int right = a.size();
+
+        while(left + 1 < right)
+        {
+            int mid = (left + right) / 2;
+
+            if(a[mid] < target)
+            {
+                left = mid;
+            }
+            else
+            {
+                right = mid;
+            }
+        }
+
+        return right;
+    }
+
+    // Поиск 2: правая граница
+    // left - позиция элемента <= target
+    // right - позиция элемента > target
+
+    int lastIndex(const vector<int>& a, int target) const
+    {
+        int left = -1;
+        int right = a.size();
+
+        while(left + 1 < right)
+        {
+            int mid = (left + right) / 2;
+
+            if(a[mid] <= target)
+            {
+                left = mid;
+            }
+            else
+            {
+                right = mid;
+            }
+        }
+
+        return left;
+    }
+
+    int lower(const vector<int>& ar, int first, int count, int target) const
+    {
+        int index = 0, step = 0;
+
+        while(count) 
+        {
+            index = first;
+            
+            step = count >> 1;
+            
+            index += step;
+            
+            if(ar[index] < target) 
+            {
+                first = ++index;
+
+                count -= step + 1;
+            } 
+            else 
+            {
+                count = step;
+            }
+        }
+        
+        return first;
+    }
+
+    int upper(const vector<int>& ar, int first, int count, int target) const
+    {
+        int index = 0, step = 0;
+
+        while(count) 
+        {
+            index = first;
+            
+            step = count >> 1;
+            
+            index += step;
+            
+            if(!(target < ar[index]))
+            {
+                first = ++index;
+
+                count -= step + 1;
+            } 
+            else 
+            {
+                count = step;
+            }
+        }
+        
+        return first;
+    }
+};
