@@ -1,0 +1,77 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+class Solution {
+public:
+
+    bool isValidSudoku(const vector<vector<char>>& board) 
+    {
+        bool rows[9][9] = {false};
+        bool columns[9][9] = {false};
+        bool box[9][9] = {false};
+
+        for(size_t r = 0, n = 0, index = 0; r < 9; ++r)
+        {
+            for(size_t col = 0; col < 9; ++col)
+            {
+                if(board[r][col] != '.') 
+                {
+                    n = board[r][col] - '1';
+
+                    if
+                    (
+                            rows[r][n] || 
+                            columns[col][n] ||
+                            box[index = (size_t(r / 3) * 3 + col / 3)][n]
+                    )
+                    {
+                        return false;    
+                    }
+
+                    rows[r][n]      = true;
+                    columns[col][n] = true;
+                    box[index][n]   = true;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    bool isValidSudoku1(const vector<vector<char>>& board) 
+    {
+        bool rows[9][9] = {false};
+        bool columns[9][9] = {false};
+        bool box[3][3][9] = {false};
+
+        for(size_t r = 0, n = 0; r < 9; ++r)
+        {
+            for(size_t col = 0; col < 9; ++col)
+            {
+                if(board[r][col] != '.') 
+                {
+                    n = board[r][col] - '1';
+
+                    if
+                    (
+                            rows[r][n] || 
+                            columns[col][n] ||
+                            box[r / 3][col / 3][n]
+                    )
+                    {
+                        return false;    
+                    }
+
+                    rows[r][n]              = true;
+                    columns[col][n]         = true;
+                    box[r / 3][col / 3][n]  = true;
+                }
+            }
+        }
+
+        return true;
+    }
+};
