@@ -1,0 +1,68 @@
+const int ZERO = [](){
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    return 0;
+}();
+
+class Solution {
+public:
+    void solveSudoku(vector<vector<char>>& board) {
+        solve(board, 0, 0);
+    }
+    
+private:
+    bool solve(vector<vector<char>>& board, int row, int col) 
+    {
+        if(row == 9) 
+        {
+            return true; // конец доски, решение найдено
+        }
+
+        if (col == 9) 
+        {
+            return solve(board, row+1, 0); // переходим на следующую строку
+        }
+
+        if (board[row][col] != '.') 
+        {
+            return solve(board, row, col+1); // ячейка уже заполнена, переходим к следующей
+        }
+
+        for (char c = '1'; c <= '9'; c++) 
+        { // перебираем все возможные значения
+            if (isValid(board, row, col, c)) 
+            { // проверяем, может ли быть установлено значение
+                board[row][col] = c; // устанавливаем значение
+                if(solve(board, row, col+1)) 
+                { // продолжаем поиск
+                    return true;
+                }
+                board[row][col] = '.'; // восстанавливаем пустое значение
+            }
+        }
+        return false; // решение не найдено
+    }
+    
+    bool isValid(vector<vector<char>>& board, int row, int col, char c) 
+    {
+        for (int i = 0; i < 9; i++) 
+        { // проверяем строку и столбец
+            if (board[row][i] == c || board[i][col] == c) {
+                return false;
+            }
+        }
+
+        int start_row = (row / 3) * 3;
+        int start_col = (col / 3) * 3;
+        for (int i = start_row; i < start_row+3; i++) 
+        { // проверяем квадрат 3x3
+            for (int j = start_col; j < start_col+3; j++) 
+            {
+                if (board[i][j] == c) {
+                    return false;
+                }
+            }
+        }
+        return true; // значение может быть установлено
+    }
+};
