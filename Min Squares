@@ -21,8 +21,6 @@ int main() {
     return 0;
 }
 
-Пример кода для динамического программирования bottom-up на C++:
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -44,3 +42,28 @@ int main() {
     cout << dp[n] << endl;
     return 0;
 }
+
+int getMinSquares(int n) {
+    // Базовый случай
+    if (n <= 3) {
+        return n;
+    }
+
+    // Инициализируем результат на худший случай
+    int res = n;
+
+    // Проходим по всем числам, которые меньше n и больше 0
+    for (int i = 1; i <= n; i++) {
+        int temp = i * i;
+
+        // Если i^2 больше n, то оставшиеся числа будут еще больше, выходим из цикла
+        if (temp > n) {
+            break;
+        } else {
+            res = min(res, 1 + getMinSquares(n - temp));
+        }
+    }
+
+    return res;
+}
+
