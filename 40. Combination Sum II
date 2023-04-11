@@ -1,0 +1,27 @@
+class Solution {
+public:
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        vector<vector<int>> result;
+        vector<int> current;
+        sort(candidates.begin(), candidates.end()); // сортируем candidates
+
+        backtrack(candidates, target, 0, current, result); // вызов рекурсивной функции
+        return result;
+    }
+
+    void backtrack(vector<int>& candidates, int target, int start, vector<int>& current, vector<vector<int>>& result) {
+        if (target == 0) { // если мы достигли цели, то добавляем текущую комбинацию в ответ
+            result.push_back(current);
+            return;
+        }
+
+        for (int i = start; i < candidates.size() && candidates[i] <= target; ++i) {
+            // проверка на дублирование комбинаций, пропускаем повторяющиеся числа
+            if (i > start && candidates[i] == candidates[i-1]) continue;
+
+            current.push_back(candidates[i]); // добавляем текущее число в комбинацию
+            backtrack(candidates, target - candidates[i], i + 1, current, result); // рекурсивный вызов для оставшейся суммы
+            current.pop_back(); // удаляем текущее число из комбинации
+        }
+    }
+};
